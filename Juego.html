@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOXO Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+        }
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #000;
+            transition: all 0.3s;
+        }
+        .box:hover {
+            background-color: #e0e0e0;
+        }
+        .x {
+            color: #00f;
+        }
+        .o {
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div class="game"></div>
+    <script>
+        const game = document.querySelector('.game');
+        let board = Array(9).fill(null);
+        let turn = true;
+
+        for (let i = 0; i < 9; i++) {
+            const box = document.createElement('div');
+            box.classList.add('box');
+            box.setAttribute('id', i);
+            box.addEventListener('click', playGame);
+            game.appendChild(box);
+        }
+
+        function playGame(e) {
+            const box = e.target;
+            const id = box.getAttribute('id');
+            if (board[id] === null) {
+                if (turn) {
+                    box.classList.add('x');
+                    box.textContent = 'X';
+                } else {
+                    box.classList.add('o');
+                    box.textContent = 'O';
+                }
+                board[id] = turn ? 'X' : 'O';
+                turn = !turn;
+                checkWinner();
+            }
+        }
+
+        function checkWinner() {
+            const lines = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+            for (let line of lines) {
+                const [a, b, c] = line;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    document.querySelector(`.box[id="${a}"]`).style.backgroundColor = '#f0e0e0';
+                    document.querySelector(`.box[id="${b}"]`).style.backgroundColor = '#f0e0e0';
+                    document.querySelector(`.box[id="${c}"]`).style.backgroundColor = '#f0e0e0';
+                    alert(`Player ${board[a]} wins!`);
+                    return;
+                }
+            }
+            if (!board.includes(null)) {
+                alert('It\'s a tie!');
+            }
+        }
+    </script>
+</body>
+</html>
